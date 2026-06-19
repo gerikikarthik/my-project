@@ -1,0 +1,131 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Welcome, {{ current_user.username }} 👋</h1>
+
+        <div class="buttons">
+            <a href="{{ url_for('add_task') }}" class="btn add-btn">
+                + Add Task
+            </a>
+
+            <a href="{{ url_for('logout') }}" class="btn logout-btn">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="stats">
+
+        <div class="card">
+            <h2>{{ total }}</h2>
+            <p>Total Tasks</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ completed }}</h2>
+            <p>Completed</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ pending }}</h2>
+            <p>Pending</p>
+        </div>
+
+    </div>
+
+    <form method="GET" action="{{ url_for('dashboard') }}">
+        <input
+            type="text"
+            name="search"
+            placeholder="Search tasks..."
+            class="search-box"
+        >
+
+        <button type="submit" class="btn search-btn">
+            Search
+        </button>
+    </form>
+
+
+
+    <div class="task-list">
+
+        {% if tasks %}
+
+            {% for task in tasks %}
+
+            <div class="task-card">
+
+                <h3>{{ task.title }}</h3>
+
+                <p>
+                    Priority:
+                    {{ task.priority }}
+                </p>
+                 <p>Category: {{ task.category }}</p>
+
+                <p>
+                    Due Date:
+                    {{ task.due_date }}
+                </p>
+                 <p>
+                    task details:
+                    {{ task.description }}</p>
+                <p>
+                    Status:
+
+                    {% if task.completed %}
+                        ✅ Completed
+                    {% else %}
+                        ⏳ Pending
+                    {% endif %}
+                </p>
+
+                <div class="task-actions">
+
+                    <a href="{{ url_for('complete_task', id=task.id) }}"
+                       class="btn complete-btn">
+                        Complete
+                    </a>
+
+                    <a href="{{ url_for('edit_task', id=task.id) }}"
+                       class="btn edit-btn">
+                        Edit
+                    </a>
+
+                    <a href="{{ url_for('delete_task', id=task.id) }}"
+                       class="btn delete-btn">
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <h3>No tasks found.</h3>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
+```
