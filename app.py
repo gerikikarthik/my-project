@@ -1,5 +1,8 @@
+
+
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
+import os
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -13,8 +16,11 @@ from sqlalchemy import Table
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "mysecretkey"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
+    "DATABASE_URL",
+    "sqlite:///tasks.db"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -236,6 +242,15 @@ def logout():
 
     return redirect(url_for("login"))
 
+@app.route("/users")
+def users():
+
+    all_users = User.query.all()
+
+    return render_template(
+        "users.html",
+        users=all_users
+    )
 
 if __name__ == "__main__":
     with app.app_context():
